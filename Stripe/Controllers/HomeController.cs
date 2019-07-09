@@ -31,8 +31,10 @@ namespace Stripe.Controllers
             //Console.WriteLine(charge);
             StripeConfiguration.ApiKey = "sk_test_l5D3Gu5k6G00kaRnmy3deczM00zBvQf5OO";
 
-            var options = new SessionCreateOptions
+            bool isCustomer = true;
+            var customerOps = new SessionCreateOptions
             {
+                CustomerEmail = "patryk.szylin.dev@gmail.com",
                 PaymentMethodTypes = new List<string> {
         "card",
     },
@@ -49,9 +51,31 @@ namespace Stripe.Controllers
                 CancelUrl = "https://example.com/cancel",
             };
 
+
+            var options = new SessionCreateOptions
+            {
+                PaymentMethodTypes = new List<string> {
+                    "card",
+                },
+                LineItems = new List<SessionLineItemOptions> {
+        new SessionLineItemOptions {
+            Name = "T-shirt",
+            Description = "Comfortable cotton t-shirt",
+            Amount = 500,
+            Currency = "gbp",
+            Quantity = 1,
+            
+        },
+    },
+                SuccessUrl = "https://example.com/success",
+                CancelUrl = "https://example.com/cancel",
+            };
+
+            var chosenOps = isCustomer ? customerOps : options;
+
             var service = new SessionService();
-            Session session = service.Create(options);
-            return View("Index.cshtml", new Data { Sid = session.Id });
+            Session session = service.Create(chosenOps);
+            return View(new Data { Sid = session.Id });
         }
 
 

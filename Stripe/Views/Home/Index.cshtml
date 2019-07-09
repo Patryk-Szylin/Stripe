@@ -33,9 +33,29 @@
     </div>
 </div>
 
+<button id="pay"> Enter now </button>
+<button id="customerPay"> Enter now as a customer</button>
 
-<script >
-    var stripe = Stripe('pk_test_1AIQyDD0LfZEDmgM4lmvLQuD00MXrTchPr');
+
+<script>
+
+    var payBtn = $("#pay").on("click", () => {
+        var stripe = Stripe('pk_test_1AIQyDD0LfZEDmgM4lmvLQuD00MXrTchPr');
+
+        stripe.redirectToCheckout({
+            // Make the id field from the Checkout Session creation API response
+            // available to this file, so you can provide it as parameter here
+            // instead of the {{CHECKOUT_SESSION_ID}} placeholder.
+            sessionId: '@Model.Sid'
+    }).then(function (result) {
+        // If `redirectToCheckout` fails due to a browser or network
+        // error, display the localized error message to your customer
+        // using `result.error.message`.
+    });
+    })
+
+    var customerBtn = $("#customerPay").on("click", () => {
+           var stripe = Stripe('pk_test_1AIQyDD0LfZEDmgM4lmvLQuD00MXrTchPr');
 
     stripe.redirectToCheckout({
         // Make the id field from the Checkout Session creation API response
@@ -47,5 +67,7 @@
         // error, display the localized error message to your customer
         // using `result.error.message`.
     });
+    })
+
 
 </script>
